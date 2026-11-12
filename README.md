@@ -30,9 +30,11 @@ unit4-5-sentence-rewrite/
 ├── app.js              # Logic điều khiển Luyện tập / Thi thật / Kết quả
 ├── favicon.svg         # Biểu tượng tab trình duyệt
 ├── robots.txt          # Cấu hình crawler
-├── package.json        # Thông tin dự án & lệnh chạy local
+├── package.json        # Thông tin dự án & lệnh chạy local / auto-push
 ├── vercel.json         # Cấu hình deploy chuẩn trên Vercel
 ├── .gitignore          # Loại trừ file tạm khi push Git
+├── scripts/
+│   └── auto-push.ps1   # Script tự động commit & push lên GitHub
 └── tests/
     ├── test-runner.html # Bộ kiểm thử grader & ngân hàng 36 câu
     └── e2e-runner.html  # Bộ kiểm thử luồng giao diện E2E
@@ -73,4 +75,23 @@ git push -u origin main
    - **Root Directory**: `./`
    - **Build Command**: để trống (đây là static web thuần HTML/CSS/JS, không cần bước build phức tạp).
    - **Output Directory**: để trống (mặc định phục vụ trực tiếp từ thư mục gốc).
-4. Bấm **Deploy** — Vercel sẽ cấp đường dẫn `.vercel.app` hoạt động ngay sau vài giây.
+4. Bấm **Deploy** — Vercel sẽ cấp đường dẫn `.vercel.app` hoạt động ngay sau vài giây. Từ sau đó, mỗi lần repo có push mới lên nhánh `main`, Vercel sẽ **tự động deploy lại**.
+
+## Tự động Push Code (Auto-Push)
+
+Project đã được cấu hình sẵn 2 cơ chế tự động push lên `origin/main`:
+
+1. **Git `post-commit` hook** (`.git/hooks/post-commit`):
+   Mỗi khi bạn `git commit` trên nhánh `main` (qua terminal hoặc VS Code), Git tự động chạy `git push origin main`.
+   *(Để tạm bỏ qua trong một lần commit, đặt biến môi trường `GIT_NO_AUTOPUSH=1`).*
+
+2. **Script Auto-Commit & Push (`scripts/auto-push.ps1`)**:
+   - **Push ngay tất cả thay đổi hiện tại:**
+     ```powershell
+     powershell -ExecutionPolicy Bypass -File scripts/auto-push.ps1
+     ```
+     *(Hoặc kèm commit message: `-Message "feat: cap nhat cau hoi"`)*
+   - **Chế độ theo dõi tự động (Watch mode):** tự động phát hiện khi bạn lưu file, chờ 5 giây rồi tự `git add`, `git commit` và `git push`:
+     ```powershell
+     powershell -ExecutionPolicy Bypass -File scripts/auto-push.ps1 -Watch
+     ```

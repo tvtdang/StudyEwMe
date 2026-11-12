@@ -5,7 +5,9 @@
   "description": "Web app luyện viết lại câu Tiếng Anh 11 (Global Success) - Unit 4 (Gerunds) & Unit 5 (Participle Clauses)",
   "scripts": {
     "dev": "npx --yes serve .",
-    "preview": "npx --yes serve ."
+    "preview": "npx --yes serve .",
+    "push": "powershell -ExecutionPolicy Bypass -File scripts/auto-push.ps1",
+    "push:watch": "powershell -ExecutionPolicy Bypass -File scripts/auto-push.ps1 -Watch"
   },
   "keywords": [
     "english-11",
