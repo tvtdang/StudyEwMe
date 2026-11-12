@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>E2E UI Runner</title>
+</head>
+<body>
+  <pre id="e2e-output">Running E2E...</pre>
+  <iframe id="app-frame" src="../index.html" style="width:1200px;height:800px;"></iframe>
+  <script>
+    (function () {
+      const frame = document.getElementById('app-frame');
+      const output = document.getElementById('e2e-output');
+      const logs = [];
+      let passed = 0;
+      let failed = 0;
+
+      function assert(cond, msg) {
+        if (cond) passed++;
+        else {
+          failed++;
+          logs.push('FAIL: ' + msg);
+        }
+      }
+
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      frame.addEventListener('load', async () => {
+        try {
+          const doc = frame.contentDocument;
+          const byId = (id) => doc.getElementById(id);
+
+          await sleep(100);
+
+          // 1. Setup view initial state
+          assert(!byId('setup-view').classList.contains('hidden'), 'Setup view visible on load');
+          assert(byId('timer-config-group').classList.contains('hidden'), 'Timer hidden in practice mode');
+          assert(byId('select-count').querySelector('option[value="all"]').textContent.includes('36'), 'Total 36 shown');
+
+          // 2. Practice Mode flow (Unit 4)
+          byId('select-scope').value = 'unit4';
+          byId('select-scope').dispatchEvent(new Event('change'));
+          assert(byId('select-count').querySelector('option[value="all"]').textContent.includes('12'), 'Unit 4 has 12 questions');
+
+          byId('btn-start').click();
+          await sleep(50);
+
+          assert(!byId('quiz-view').classList.contains('hidden'), 'Quiz view visible');
+          assert(!byId('btn-open-grammar').disabled, 'Grammar modal enabled in practice mode');
+          assert(!byId('q-topic-badge').classList.contains('hidden'), 'Topic badge visible in practice mode');
+          assert(!byId('btn-hint').classList.contains('hidden'), 'Hint button visible in practice mode');
+
+          // Test Hint toggle
+          byId('btn-hint').click();
+          assert(!byId('hint-box').classList.contains('hidden'), 'Hint box opens on click');
+
+          // Test wrong answer then check
+          byId('answer-input').value = 'leadership skills are necessary';
+          byId('answer-input').dispatchEvent(new Event('input'));
+          byId('btn-check').click();
+          assert(!byId('feedback-box').classList.contains('hidden'), 'Feedback box opens on check');
+          assert(byId('feedback-banner').classList.contains('wrong'), 'Wrong answer shows wrong banner');
+          assert(!byId('feedback-diff-wrap').classList.contains('hidden'), 'Diff shown for wrong answer');
+          assert(byId('feedback-explanation').textContent.length > 10, 'Explanation displayed');
+
+          // Test retry and correct answer
+          byId('btn-retry-question').click();
+          assert(byId('feedback-box').classList.contains('hidden'), 'Feedback hidden on retry');
+          byId('answer-input').value = 'leadership skills is necessary for young people for future careers';
+          byId('answer-input').dispatchEvent(new Event('input'));
+          byId('btn-check').click();
+          assert(byId('feedback-banner').classList.contains('correct'), 'Correct answer shows correct banner');
+          assert(byId('practice-correct-count').textContent === '1', 'Practice correct count updated to 1');
+
+          // Finish practice early -> confirm -> results
+          byId('btn-finish-early').click();
+          assert(!byId('confirm-modal').classList.contains('hidden'), 'Confirm modal opens for unchecked practice questions');
+          byId('btn-confirm-submit').click();
+          assert(!byId('results-view').classList.contains('hidden'), 'Results view visible after practice finish');
+          assert(byId('res-correct-ratio').textContent === '1 / 12', 'Results ratio 1 / 12');
+
+          // 3. Return home and run Exam Mode
+          byId('btn-new-session').click();
+          assert(!byId('setup-view').classList.contains('hidden'), 'Returned to setup view');
+
+          const examCard = doc.querySelector('.mode-card[data-mode="exam"]');
+          examCard.click();
+          assert(!byId('timer-config-group').classList.contains('hidden'), 'Timer config visible in exam mode');
+
+          byId('select-scope').value = 'mixed';
+          byId('select-scope').dispatchEvent(new Event('change'));
+          if (byId('chk-shuffle').checked) {
+            byId('chk-shuffle').click();
+          }
+
+          byId('btn-start').click();
+          await sleep(50);
+
+          assert(byId('btn-open-grammar').disabled, 'Grammar modal LOCKED in exam mode');
+          assert(byId('q-topic-badge').classList.contains('hidden'), 'Topic badge HIDDEN in exam mode');
+          assert(byId('btn-check').classList.contains('hidden'), 'Check button HIDDEN in exam mode');
+          assert(byId('btn-hint').classList.contains('hidden'), 'Hint button HIDDEN in exam mode');
+          assert(!byId('exam-timer-pill').classList.contains('hidden'), 'Exam timer pill visible');
+
+          // Q27 (first mixed question when unshuffled): answer correctly
+          byId('answer-input').value = 'a major contribution to promoting peace and development in the region';
+          byId('answer-input').dispatchEvent(new Event('input'));
+          assert(byId('exam-answered-count').textContent === '1/10', 'Answered count updated to 1/10');
+
+          // Move to Q28, type wrong answer, flag it
+          byId('btn-next').click();
+          byId('answer-input').value = 'Producing from burning coal and crop waste';
+          byId('answer-input').dispatchEvent(new Event('input'));
+          byId('btn-flag').click();
+          assert(byId('exam-flagged-count').textContent === '1', 'Flagged count updated to 1');
+
+          // Submit exam
+          byId('btn-submit-exam-side').click();
+          assert(!byId('confirm-modal').classList.contains('hidden'), 'Confirm modal opens on exam submit');
+          assert(byId('confirm-message').textContent.includes('8 câu chưa trả lời'), 'Confirm mentions 8 unanswered');
+          assert(byId('confirm-message').textContent.includes('1 câu bạn đã đánh dấu'), 'Confirm mentions 1 flagged');
+
+          byId('btn-confirm-submit').click();
+          assert(!byId('results-view').classList.contains('hidden'), 'Results view opens after exam submit');
+          assert(byId('res-correct-ratio').textContent === '1 / 10', 'Exam ratio 1 / 10');
+          assert(byId('res-score-ten').textContent === '1.0', 'Exam score 1.0');
+
+          // Test review filters
+          doc.querySelector('.filter-tab[data-filter="correct"]').click();
+          assert(byId('review-list').children.length === 1, 'Filter correct shows 1 item');
+          doc.querySelector('.filter-tab[data-filter="flagged"]').click();
+          assert(byId('review-list').children.length === 1, 'Filter flagged shows 1 item');
+          doc.querySelector('.filter-tab[data-filter="wrong"]').click();
+          assert(byId('review-list').children.length === 9, 'Filter wrong shows 9 items');
+
+          // Test retry wrong questions switches to practice mode with 9 questions
+          byId('btn-retry-wrong').click();
+          assert(!byId('quiz-view').classList.contains('hidden'), 'Retry wrong starts quiz');
+          assert(byId('progress-text').textContent === 'Câu 1 / 9', 'Retry wrong has 9 questions');
+          assert(!byId('btn-check').classList.contains('hidden'), 'Retry wrong uses practice mode');
+
+          output.textContent = [`E2E_SUMMARY: passed=${passed}, failed=${failed}`, ...logs].join('\n');
+        } catch (err) {
+          output.textContent = 'E2E_ERROR: ' + (err && err.stack ? err.stack : String(err));
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

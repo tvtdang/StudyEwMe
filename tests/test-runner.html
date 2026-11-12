@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Automated Grader &amp; Question Bank Tests</title>
+  <script src="../questions.js"></script>
+  <script src="../grader.js"></script>
+</head>
+<body>
+  <pre id="test-output">Running...</pre>
+  <script>
+    (function () {
+      const logs = [];
+      let passed = 0;
+      let failed = 0;
+
+      function assert(condition, message) {
+        if (condition) {
+          passed++;
+        } else {
+          failed++;
+          logs.push('FAIL: ' + message);
+        }
+      }
+
+      const qs = window.REWRITE_QUESTIONS;
+      const G = window.RewriteGrader;
+
+      assert(Array.isArray(qs) && qs.length === 36, 'Should contain exactly 36 questions');
+
+      const seenIds = new Set();
+      qs.forEach((q) => {
+        assert(!seenIds.has(q.id), `Duplicate ID: ${q.id}`);
+        seenIds.add(q.id);
+        assert(Boolean(q.prompt && q.displayAnswer && q.explanation && q.hint), `Missing fields in Q${q.id}`);
+        assert(Array.isArray(q.acceptedAnswers) && q.acceptedAnswers.length > 0, `No acceptedAnswers in Q${q.id}`);
+
+        // Full displayAnswer must pass cleanly
+        const resDisplay = G.gradeQuestion(q, q.displayAnswer);
+        assert(resDisplay.isCorrect && !resDisplay.punctuationTip, `Q${q.id} displayAnswer failed`);
+
+        // Every acceptedAnswer (blank-only) must pass cleanly
+        q.acceptedAnswers.forEach((ans, idx) => {
+          const resAcc = G.gradeQuestion(q, ans);
+          assert(resAcc.isCorrect && !resAcc.punctuationTip, `Q${q.id} acceptedAnswers[${idx}] failed`);
+        });
+      });
+
+      const byId = (id) => qs.find((q) => q.id === id);
+
+      // Case, spaces, trailing punctuation
+      assert(
+        G.gradeQuestion(byId(1), '  leadership skills IS necessary for young people for future careers . ').isCorrect,
+        'Q1 case/spacing tolerance'
+      );
+
+      // UK/US spelling
+      assert(
+        G.gradeQuestion(byId(6), 'organizing a Vietnamese Traditional Games Festival to welcome the guests').isCorrect,
+        'Q6 US spelling organize'
+      );
+      assert(
+        G.gradeQuestion(byId(15), 'around their neighborhood, the students carried out a survey on daily green habits').isCorrect,
+        'Q15 US spelling neighborhood'
+      );
+      assert(
+        G.gradeQuestion(byId(17), 'colorful leaflet').isCorrect === false,
+        'Random fragment should fail'
+      );
+
+      // Prefix + Suffix handling (Q10)
+      assert(
+        G.gradeQuestion(byId(10), 'the cultural festival in Singapore last year').isCorrect,
+        'Q10 blank-only'
+      );
+      assert(
+        G.gradeQuestion(byId(10), 'Joining the cultural festival in Singapore last year was an unforgettable experience for Minh.').isCorrect,
+        'Q10 full sentence'
+      );
+
+      // Suffix-only handling (Q28)
+      assert(
+        G.gradeQuestion(byId(28), 'Produced from burning coal and crop waste').isCorrect,
+        'Q28 blank-only'
+      );
+      assert(
+        G.gradeQuestion(byId(28), 'Produced from burning coal and crop waste,').isCorrect,
+        'Q28 blank with trailing comma'
+      );
+      assert(
+        G.gradeQuestion(byId(28), 'Produced from burning coal and crop waste, black carbon harms human health and the climate.').isCorrect,
+        'Q28 full sentence'
+      );
+
+      // Wrong full sentence on suffix-only Q28 must NOT duplicate suffix
+      const wrong28 = G.gradeQuestion(
+        byId(28),
+        'Producing from burning coal and crop waste, black carbon harms human health and the climate.'
+      );
+      assert(!wrong28.isCorrect, 'Q28 wrong participle should fail');
+      assert(
+        wrong28.userFull === 'Producing from burning coal and crop waste, black carbon harms human health and the climate.',
+        `Q28 userFull should not duplicate suffix: got "${wrong28.userFull}"`
+      );
+
+      // Missing internal comma tip (Q13)
+      const noComma13 = G.gradeQuestion(
+        byId(13),
+        'a lot of methane rice farms have a strong warming effect on the atmosphere'
+      );
+      assert(noComma13.isCorrect && noComma13.punctuationTip, 'Q13 missing comma should pass with punctuationTip');
+
+      // Empty input
+      const empty1 = G.gradeQuestion(byId(1), '   ');
+      assert(empty1.isEmpty && !empty1.isCorrect, 'Empty input should set isEmpty=true, isCorrect=false');
+
+      // Word diff on wrong input
+      const wrong1 = G.gradeQuestion(byId(1), 'leadership skills are necessary for young people for future careers');
+      assert(!wrong1.isCorrect && wrong1.diff.some((d) => d.type === 'extra' && d.text === 'are'), 'Q1 wrong verb should show diff');
+
+      const summary = `SUMMARY: passed=${passed}, failed=${failed}`;
+      document.getElementById('test-output').textContent =
+        [summary, ...logs].join('\n');
+    })();
+  </script>
+</body>
+</html>

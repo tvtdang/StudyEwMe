@@ -1,0 +1,19 @@
+{
+  "name": "unit4-5-sentence-rewrite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Web app luyện viết lại câu Tiếng Anh 11 (Global Success) - Unit 4 (Gerunds) & Unit 5 (Participle Clauses)",
+  "scripts": {
+    "dev": "npx --yes serve .",
+    "preview": "npx --yes serve ."
+  },
+  "keywords": [
+    "english-11",
+    "global-success",
+    "unit-4",
+    "unit-5",
+    "gerunds",
+    "participle-clauses",
+    "sentence-rewrite"
+  ]
+}
