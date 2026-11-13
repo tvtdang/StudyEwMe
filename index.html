@@ -3,390 +3,401 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LexiRead A2 – Học Từ Vựng Tiếng Anh Theo Ngữ Cảnh Bài Đọc Hiểu</title>
-  <meta name="description" content="Trang web học từ vựng tiếng Anh theo ngữ cảnh bài đọc hiểu đạt chuẩn đầu ra CEFR A2 (Cambridge KET). 6 chủ đề, 48 từ vựng mục tiêu, tra cứu tức thì, flashcards 3D, bài tập ngữ cảnh và bài thi đọc hiểu chuẩn hóa." />
-  <meta name="theme-color" content="#2563eb" />
+  <title>Ôn Tập Viết Lại Câu – Tiếng Anh 11 (Unit 4 &amp; Unit 5)</title>
+  <meta name="description" content="Ứng dụng ôn tập và thi thử viết lại câu Tiếng Anh 11 (Global Success) – Unit 4 (Gerunds) &amp; Unit 5 (Participle Clauses), chấm điểm thông minh và giải thích chi tiết." />
+  <meta name="theme-color" content="#0f766e" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Ôn Tập Viết Lại Câu – Tiếng Anh 11 (Unit 4 &amp; Unit 5)" />
+  <meta property="og:description" content="36 câu luyện viết lại câu Unit 4 &amp; Unit 5 với 2 chế độ Luyện tập / Thi thật, chấm thông minh Anh–Anh / Anh–Mỹ và so sánh lỗi từng từ." />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="stylesheet" href="vocab-styles.css" />
-  <script defer src="vocab-data.js"></script>
-  <script defer src="vocab-app.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="questions.js"></script>
+  <script defer src="grader.js"></script>
+  <script defer src="app.js"></script>
 </head>
 <body>
-  <!-- ==================== TOP HEADER ==================== -->
-  <header class="top-header">
+  <header class="app-header">
     <div class="container header-inner">
-      <div class="header-left">
-        <div class="logo-icon" aria-hidden="true">📖</div>
-        <div class="logo-info">
-          <h1>
-            LexiRead <span class="a2-badge">Chuẩn A2</span>
-          </h1>
-          <p>Học từ vựng theo ngữ cảnh bài đọc hiểu</p>
+      <div class="brand">
+        <div class="brand-badge">EN 11</div>
+        <div>
+          <h1 class="brand-title">Luyện Viết Lại Câu – Unit 4 &amp; Unit 5</h1>
+          <p class="brand-subtitle">ASEAN &amp; Viet Nam (Gerunds) • Global Warming (Participle Clauses)</p>
         </div>
       </div>
       <div class="header-actions">
-        <a href="sentence-rewrite.html" class="btn-nav-action btn-external-link" title="Chuyển sang module Luyện viết lại câu Unit 4-5">
-          <span aria-hidden="true">✍️</span>
-          <span>Viết lại câu Unit 4-5</span>
-        </a>
+        <button id="btn-open-grammar" class="btn btn-ghost" type="button">
+          <span aria-hidden="true">📘</span> Tóm tắt ngữ pháp
+        </button>
+        <button id="btn-back-home" class="btn btn-outline hidden" type="button">
+          ← Đổi chế độ
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- ==================== UNIT SELECTOR BAR ==================== -->
-  <section class="unit-bar" aria-label="Chọn bài học">
-    <div class="container unit-bar-inner">
-      <div class="unit-selector-wrapper">
-        <label for="unit-select" class="unit-label">📚 Chủ đề:</label>
-        <select id="unit-select" class="unit-select" aria-label="Chọn bài học"></select>
-      </div>
-      <div id="unit-meta-chips" class="unit-meta-chips"></div>
-    </div>
-  </section>
+  <main class="container main-content">
+    <!-- ==================== 1. MÀN HÌNH THIẾT LẬP ==================== -->
+    <section id="setup-view" class="view">
+      <div class="hero-card">
+        <h2>Chọn chế độ ôn tập</h2>
+        <p class="muted">
+          Hệ thống tự động chấp nhận biến thể chính tả Anh–Anh / Anh–Mỹ, dạng viết tắt và cho phép gõ phần còn thiếu hoặc gõ lại toàn bộ câu.
+        </p>
 
-  <!-- ==================== MODE TAB BAR ==================== -->
-  <nav class="mode-tabs-wrapper" aria-label="Chế độ học tập">
-    <div class="container">
-      <div class="mode-tabs" role="tablist">
-        <button class="tab-btn active" data-tab="reading" role="tab" aria-selected="true" type="button">
-          <span>📖</span> Bài đọc &amp; Tra từ
-        </button>
-        <button class="tab-btn" data-tab="clues" role="tab" aria-selected="false" type="button">
-          <span>🧠</span> Đoán nghĩa ngữ cảnh
-        </button>
-        <button class="tab-btn" data-tab="cloze" role="tab" aria-selected="false" type="button">
-          <span>✍️</span> Điền từ (Cloze)
-        </button>
-        <button class="tab-btn" data-tab="flashcards" role="tab" aria-selected="false" type="button">
-          <span>🃏</span> Thẻ Flashcards 3D
-        </button>
-        <button class="tab-btn" data-tab="match" role="tab" aria-selected="false" type="button">
-          <span>🎮</span> Ghép từ &amp; Tình huống
-        </button>
-        <button class="tab-btn" data-tab="quiz" role="tab" aria-selected="false" type="button">
-          <span>📝</span> Kiểm tra đọc hiểu
-        </button>
-        <button class="tab-btn" data-tab="notebook" role="tab" aria-selected="false" type="button">
-          <span>⭐</span> Sổ tay từ vựng
-        </button>
-        <button class="tab-btn" data-tab="dashboard" role="tab" aria-selected="false" type="button">
-          <span>📊</span> Tiến độ A2
-        </button>
-      </div>
-    </div>
-  </nav>
-
-  <!-- ==================== MAIN CONTENT WRAPPER ==================== -->
-  <main class="main-wrapper container">
-
-    <!-- ==================== 1. READING & VOCAB PANE ==================== -->
-    <section id="tab-reading" class="tab-pane active" role="tabpanel">
-      <div class="reading-layout">
-        <!-- Main Reading Passage Card -->
-        <article class="reading-card">
-          <div class="reading-header">
-            <span id="reading-topic" class="reading-topic-pill">Everyday Life</span>
-            <h2 id="reading-title-en" class="reading-title-en">Unit Reading</h2>
-            <p id="reading-title-vi" class="reading-title-vi">Tiêu đề tiếng Việt</p>
-            <p id="reading-summary" style="margin-top: 0.6rem; font-size: 0.95rem; color: var(--text-muted);"></p>
-          </div>
-
-          <!-- Reading Controls (Audio, Speed, Font Size, Theme) -->
-          <div class="reading-controls" aria-label="Công cụ hỗ trợ bài đọc">
-            <div class="audio-controls-group">
-              <button id="btn-play-audio" class="btn-audio-primary" type="button">
-                <span>▶️</span> Nghe bài đọc
-              </button>
-              <button id="btn-stop-audio" class="btn-icon-control" type="button" title="Dừng phát âm">
-                ⏹️
-              </button>
-              <select id="speed-select" class="speed-select" title="Tốc độ đọc">
-                <option value="0.8">Tốc độ: 0.8x (Chậm)</option>
-                <option value="1.0" selected>Tốc độ: 1.0x (Chuẩn)</option>
-                <option value="1.2">Tốc độ: 1.2x (Nhanh)</option>
-              </select>
-            </div>
-
-            <div style="display:flex; align-items:center; gap:0.6rem;">
-              <div class="text-size-controls">
-                <button id="btn-text-smaller" class="btn-icon-control" type="button" title="Giảm cỡ chữ">A-</button>
-                <button id="btn-text-larger" class="btn-icon-control" type="button" title="Tăng cỡ chữ">A+</button>
+        <div class="mode-grid" role="radiogroup" aria-label="Chế độ làm bài">
+          <label class="mode-card selected" data-mode="practice">
+            <input type="radio" name="mode" value="practice" checked />
+            <div class="mode-icon practice-icon">✍️</div>
+            <div class="mode-body">
+              <div class="mode-title">
+                Chế độ Luyện tập
+                <span class="pill pill-green">Xem đáp án từng câu</span>
               </div>
-              <select id="theme-select" class="theme-select" title="Chế độ màu hiển thị">
-                <option value="light">☀️ Sáng</option>
-                <option value="sepia">📜 Giấy vàng</option>
-                <option value="dark">🌙 Tối</option>
-              </select>
+              <p>
+                Làm xong từng câu bấm kiểm tra để xem ngay đúng/sai, so sánh lỗi từng từ, đáp án chuẩn, gợi ý và giải thích chi tiết.
+              </p>
+            </div>
+          </label>
+
+          <label class="mode-card" data-mode="exam">
+            <input type="radio" name="mode" value="exam" />
+            <div class="mode-icon exam-icon">⏱️</div>
+            <div class="mode-body">
+              <div class="mode-title">
+                Chế độ Thi thật
+                <span class="pill pill-amber">Nộp bài mới có đáp án</span>
+              </div>
+              <p>
+                Ẩn toàn bộ đáp án, gợi ý và bảng ngữ pháp trong lúc làm bài. Có đồng hồ đếm ngược, đánh dấu câu xem lại và chấm điểm sau khi nộp.
+              </p>
+            </div>
+          </label>
+        </div>
+
+        <div class="config-grid">
+          <div class="config-group">
+            <label for="select-scope">Phạm vi bài tập</label>
+            <select id="select-scope" class="form-control">
+              <option value="all">Tất cả (Unit 4 + Unit 5 + Tổng hợp – 36 câu)</option>
+              <option value="unit4">Unit 4: ASEAN &amp; Viet Nam – Gerunds (12 câu)</option>
+              <option value="unit5">Unit 5: Global warming – Participle Clauses (14 câu)</option>
+              <option value="mixed">Tổng hợp &amp; Nâng cao Unit 4 + 5 (10 câu)</option>
+            </select>
+          </div>
+
+          <div class="config-group">
+            <label for="select-count">Số lượng câu hỏi</label>
+            <select id="select-count" class="form-control">
+              <option value="all">Tất cả câu trong phạm vi</option>
+              <option value="10">10 câu</option>
+              <option value="15">15 câu</option>
+              <option value="20">20 câu</option>
+            </select>
+          </div>
+
+          <div id="timer-config-group" class="config-group hidden">
+            <label for="select-timer">Thời gian thi</label>
+            <select id="select-timer" class="form-control">
+              <option value="15">15 phút</option>
+              <option value="10">10 phút</option>
+              <option value="25">25 phút</option>
+              <option value="0">Không giới hạn</option>
+            </select>
+          </div>
+
+          <div class="config-group checkbox-group">
+            <label class="checkbox-label">
+              <input id="chk-shuffle" type="checkbox" />
+              <span>Xáo trộn thứ tự câu hỏi</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setup-footer">
+          <button id="btn-start" class="btn btn-primary btn-lg" type="button">
+            Bắt đầu Luyện tập →
+          </button>
+        </div>
+      </div>
+
+      <section id="history-section" class="card history-card hidden">
+        <div class="section-header-row">
+          <h3>Lịch sử làm bài gần đây</h3>
+          <button id="btn-clear-history" class="btn btn-text" type="button">Xóa lịch sử</button>
+        </div>
+        <div id="history-list" class="history-list"></div>
+      </section>
+    </section>
+
+    <!-- ==================== 2. MÀN HÌNH LÀM BÀI ==================== -->
+    <section id="quiz-view" class="view hidden">
+      <div class="quiz-topbar card">
+        <div class="topbar-left">
+          <span id="badge-mode" class="pill pill-green">Chế độ Luyện tập</span>
+          <span id="progress-text" class="progress-text">Câu 1 / 36</span>
+        </div>
+
+        <div class="progress-track" aria-hidden="true">
+          <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+
+        <div class="topbar-right">
+          <div id="practice-score-pill" class="stat-pill">
+            Đúng: <strong id="practice-correct-count">0</strong>/<span id="practice-checked-count">0</span>
+          </div>
+          <div id="exam-timer-pill" class="timer-pill hidden">
+            ⏱️ <span id="timer-display">15:00</span>
+          </div>
+          <button id="btn-finish-early" class="btn btn-accent" type="button">
+            Xem tổng kết
+          </button>
+        </div>
+      </div>
+
+      <div class="quiz-layout">
+        <!-- Cột chính: Câu hỏi -->
+        <div class="question-column">
+          <div class="card question-card">
+            <div class="question-meta">
+              <span id="q-unit-badge" class="unit-tag">Unit 4</span>
+              <span id="q-topic-badge" class="topic-tag">Gerund as Subject</span>
+              <button id="btn-flag" class="btn btn-flag" type="button" title="Đánh dấu câu cần xem lại">
+                ⚑ Đánh dấu
+              </button>
+            </div>
+
+            <div class="prompt-box">
+              <div class="prompt-label">Câu gốc:</div>
+              <p id="q-prompt" class="prompt-text"></p>
+              <div id="q-cue-wrap" class="cue-wrap hidden">
+                Từ gợi ý bắt buộc: <span id="q-cue" class="cue-badge"></span>
+              </div>
+            </div>
+
+            <div class="answer-box">
+              <label for="answer-input" class="answer-label">Viết lại câu hoàn chỉnh:</label>
+              <div class="rewrite-composer">
+                <span id="q-prefix" class="fixed-part hidden"></span>
+                <textarea
+                  id="answer-input"
+                  class="answer-textarea"
+                  rows="2"
+                  placeholder="Nhập phần viết lại của bạn tại đây..."
+                  spellcheck="false"
+                  autocomplete="off"
+                ></textarea>
+                <span id="q-suffix" class="fixed-part hidden"></span>
+              </div>
+              <p class="input-note">
+                Mẹo: Bạn chỉ cần nhập phần còn thiếu vào ô trống (hoặc gõ nguyên cả câu đều được chấm đúng).
+              </p>
+            </div>
+
+            <!-- Gợi ý (chỉ dùng ở Luyện tập) -->
+            <div id="hint-box" class="hint-box hidden">
+              <strong>💡 Gợi ý cấu trúc:</strong> <span id="hint-text"></span>
+            </div>
+
+            <!-- Thanh nút điều khiển câu hỏi -->
+            <div class="question-actions">
+              <div class="actions-left">
+                <button id="btn-prev" class="btn btn-outline" type="button">← Câu trước</button>
+                <button id="btn-next" class="btn btn-outline" type="button">Câu tiếp →</button>
+              </div>
+              <div class="actions-right">
+                <button id="btn-hint" class="btn btn-ghost" type="button">💡 Xem gợi ý</button>
+                <button id="btn-retry-question" class="btn btn-outline hidden" type="button">↻ Làm lại câu này</button>
+                <button id="btn-check" class="btn btn-primary" type="button">Kiểm tra đáp án</button>
+              </div>
+            </div>
+
+            <!-- Kết quả tức thì (chỉ hiện ở Chế độ Luyện tập sau khi kiểm tra) -->
+            <div id="feedback-box" class="feedback-box hidden">
+              <div id="feedback-banner" class="feedback-banner"></div>
+              <div id="feedback-punctuation-note" class="punctuation-note hidden">
+                ⚠️ Đúng ngữ pháp! Lưu ý nhỏ: nhớ đặt dấu phẩy (<code>,</code>) để ngăn cách mệnh đề phân từ với mệnh đề chính nhé.
+              </div>
+              <div id="feedback-diff-wrap" class="diff-wrap hidden">
+                <div class="feedback-sublabel">So sánh câu của bạn với đáp án chuẩn:</div>
+                <div id="feedback-diff" class="diff-tokens"></div>
+                <div class="diff-legend">
+                  <span><i class="legend-dot dot-match"></i> Đúng</span>
+                  <span><i class="legend-dot dot-extra"></i> Dư / Sai</span>
+                  <span><i class="legend-dot dot-missing"></i> Còn thiếu</span>
+                </div>
+              </div>
+              <div class="official-answer-wrap">
+                <div class="feedback-sublabel">Đáp án chuẩn:</div>
+                <p id="feedback-answer" class="official-answer"></p>
+                <div id="feedback-alt-wrap" class="alt-answers hidden">
+                  <span class="alt-label">Phương án khác cũng được chấp nhận:</span>
+                  <ul id="feedback-alt-list"></ul>
+                </div>
+              </div>
+              <div class="explanation-wrap">
+                <div class="feedback-sublabel">Giải thích chi tiết:</div>
+                <p id="feedback-explanation" class="explanation-text"></p>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Reading Text Content -->
-          <div id="reading-passage" class="reading-body"></div>
-
-          <!-- Bottom Usage Guide -->
-          <div class="reading-guide-box">
-            <p>
-              💡 <strong>Mẹo học từ vựng A2 hiệu quả:</strong> Nhấp chuột vào các từ có gạch chân màu xanh để mở bảng tra nghĩa, phát âm IPA, mẹo nhận biết qua ngữ cảnh và cụm từ đi kèm. Bấm nút <strong>Nghe bài đọc</strong> để luyện kết hợp kỹ năng Đọc và Nghe (Reading-while-listening).
-            </p>
-          </div>
-        </article>
-
-        <!-- Sidebar: Target Vocab of the Unit -->
-        <aside class="vocab-sidebar" aria-label="Danh sách từ vựng trọng tâm">
-          <div class="sidebar-card">
-            <div class="sidebar-title">
-              <span>🎯 Từ vựng trọng tâm</span>
-              <span id="sidebar-word-count" style="font-size:0.8rem; font-weight:600; color:var(--primary);">8 từ</span>
+        <!-- Cột phụ: Điều hướng câu hỏi -->
+        <aside class="navigator-column">
+          <div class="card navigator-card">
+            <h3>Danh sách câu hỏi</h3>
+            <div id="question-grid" class="question-grid"></div>
+            <div id="navigator-legend" class="navigator-legend"></div>
+            <div id="exam-summary-box" class="exam-summary-box hidden">
+              <div class="exam-stat-row">
+                <span>Đã làm:</span>
+                <strong id="exam-answered-count">0/0</strong>
+              </div>
+              <div class="exam-stat-row">
+                <span>Đánh dấu xem lại:</span>
+                <strong id="exam-flagged-count">0</strong>
+              </div>
+              <button id="btn-submit-exam-side" class="btn btn-accent btn-block" type="button">
+                Nộp bài thi
+              </button>
             </div>
-            <div id="sidebar-word-list" class="target-words-list"></div>
-          </div>
-
-          <div class="sidebar-card" style="background-color: var(--primary-light); border-color: rgba(37,99,235,0.2);">
-            <h4 style="font-size: 0.92rem; color: var(--primary); margin-bottom: 0.4rem;">🎯 Chuẩn đầu ra A2</h4>
-            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
-              Sau bài đọc này, bạn có thể nhận biết nghĩa từ trong văn bản, hiểu đại ý, tìm chi tiết và vận dụng từ vào câu giao tiếp hàng ngày.
-            </p>
           </div>
         </aside>
       </div>
     </section>
 
-    <!-- ==================== 2. CONTEXT CLUES PANE ==================== -->
-    <section id="tab-clues" class="tab-pane" role="tabpanel">
-      <div id="clues-pane-content"></div>
-    </section>
-
-    <!-- ==================== 3. CLOZE FILL-IN PANE ==================== -->
-    <section id="tab-cloze" class="tab-pane" role="tabpanel">
-      <div class="cloze-container">
-        <div class="word-bank-box">
-          <div class="word-bank-title">Ngân hàng từ vựng (Nhấp vào ô trống rồi nhấp từ để điền):</div>
-          <div id="cloze-bank-chips" class="word-bank-chips"></div>
+    <!-- ==================== 3. MÀN HÌNH KẾT QUẢ & XEM LẠI ==================== -->
+    <section id="results-view" class="view hidden">
+      <div class="card results-hero">
+        <div class="score-circle-wrap">
+          <div class="score-circle">
+            <span id="res-score-ten" class="score-big">0.0</span>
+            <span class="score-scale">/ 10 điểm</span>
+          </div>
         </div>
 
-        <div id="cloze-list" class="cloze-list"></div>
+        <div class="results-summary-info">
+          <span id="res-mode-badge" class="pill pill-amber">Kết quả Thi thật</span>
+          <h2 id="res-headline">Hoàn thành bài làm!</h2>
+          <p id="res-subtext" class="muted"></p>
 
-        <div id="cloze-score-notice" style="display:none; margin-top: 1.5rem;"></div>
-
-        <div style="display:flex; gap:0.75rem; justify-content:center; margin-top: 1.75rem;">
-          <button id="btn-check-cloze" class="btn-quiz-primary" type="button">
-            <span>✔️</span> Kiểm tra đáp án
-          </button>
-          <button id="btn-reset-cloze" class="btn-nav-action" type="button">
-            <span>🔄</span> Làm lại
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== 4. FLASHCARDS PANE ==================== -->
-    <section id="tab-flashcards" class="tab-pane" role="tabpanel">
-      <div class="flashcards-container">
-        <div class="flashcard-wrapper">
-          <div id="flashcard-inner" class="flashcard-inner">
-            <!-- Front of Card -->
-            <div class="flashcard-front">
-              <div class="card-top-bar">
-                <span id="card-counter" class="card-counter">1 / 8</span>
-                <span class="a2-badge">A2 Flashcard</span>
-              </div>
-              <div class="card-center-content">
-                <h3 id="card-word-front" class="card-word-title">word</h3>
-                <p id="card-ipa-front" class="ipa-text">/ipa/</p>
-                <div id="card-context-front" class="card-context-sample">“Context sentence”</div>
-              </div>
-              <div class="card-bottom-hint">👉 Nhấp chuột vào thẻ hoặc bấm phím Space để lật xem nghĩa</div>
+          <div class="res-metrics">
+            <div class="metric-box">
+              <span class="metric-label">Số câu đúng</span>
+              <strong id="res-correct-ratio" class="metric-value">0 / 0</strong>
             </div>
-
-            <!-- Back of Card -->
-            <div class="flashcard-back">
-              <div class="card-top-bar">
-                <span class="pos-tag">Nghĩa &amp; Cách Dùng</span>
-                <button id="btn-card-speak" class="btn-speaker-mini" type="button" title="Nghe phát âm">🔊</button>
-              </div>
-              <div class="card-center-content">
-                <h3 id="card-word-back" class="card-word-title" style="font-size:1.8rem;">word</h3>
-                <p id="card-meaning-back" class="card-meaning-large">Nghĩa tiếng Việt</p>
-                <p id="card-def-back" style="font-size:0.9rem; color:var(--text-muted); font-style:italic;">"English definition"</p>
-                <p id="card-colloc-back" style="font-size:0.85rem; color:var(--primary); font-weight:600; margin-top:0.75rem;"></p>
-              </div>
-              <div class="card-bottom-hint">👉 Nhấp để quay lại mặt trước</div>
+            <div class="metric-box">
+              <span class="metric-label">Tỷ lệ chính xác</span>
+              <strong id="res-percent" class="metric-value">0%</strong>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Thời gian làm bài</span>
+              <strong id="res-duration" class="metric-value">00:00</strong>
             </div>
           </div>
-        </div>
 
-        <!-- Controls below Card -->
-        <div class="flashcard-controls">
-          <div style="display:flex; gap:0.4rem;">
-            <button id="btn-card-prev" class="btn-nav-action" type="button">← Từ trước</button>
-            <button id="btn-card-flip" class="btn-nav-action" type="button">🔄 Lật thẻ</button>
-            <button id="btn-card-next" class="btn-nav-action" type="button">Từ sau →</button>
-          </div>
-
-          <div class="mastery-btn-group">
-            <button id="btn-card-fail" class="btn-mastery-fail" type="button">🔴 Cần ôn thêm</button>
-            <button id="btn-card-pass" class="btn-mastery-pass" type="button">🟢 Đã nhớ từ này</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== 5. MATCH GAME PANE ==================== -->
-    <section id="tab-match" class="tab-pane" role="tabpanel">
-      <div class="match-container">
-        <div class="match-stats-bar">
-          <div class="match-stat-item">⏱️ Thời gian: <span id="match-timer" style="color:var(--primary);">00:00</span></div>
-          <div class="match-stat-item">🎯 Lượt chọn: <span id="match-moves" style="color:var(--text-main);">0</span></div>
-          <div class="match-stat-item">✨ Đã ghép: <span id="match-matched" style="color:var(--success);">0 / 8</span></div>
-          <button id="btn-restart-match" class="btn-nav-action" type="button">🔄 Chơi lại</button>
-        </div>
-
-        <div id="match-win-notice" class="feedback-box correct" style="display:none; margin-bottom:1.5rem; text-align:center;"></div>
-
-        <div id="match-grid" class="match-grid"></div>
-      </div>
-    </section>
-
-    <!-- ==================== 6. READING QUIZ PANE ==================== -->
-    <section id="tab-quiz" class="tab-pane" role="tabpanel">
-      <div class="quiz-container">
-        <div style="margin-bottom: 1.5rem; text-align:center;">
-          <h2>Kiểm Tra Đọc Hiểu &amp; Từ Vựng (Chuẩn KET A2)</h2>
-          <p class="muted">Đọc kỹ các câu hỏi bên dưới dựa vào thông tin của bài đọc, sau đó bấm Nộp bài để xem điểm và giải thích chi tiết.</p>
-        </div>
-
-        <form id="reading-quiz-form">
-          <div id="quiz-questions-list"></div>
-          <div style="text-align:center; margin-top: 1.75rem;">
-            <button id="btn-submit-quiz" class="btn-quiz-primary" type="submit" style="font-size:1.05rem; padding:0.8rem 2rem;">
-              <span>📝</span> Nộp bài &amp; Xem kết quả
+          <div class="res-actions">
+            <button id="btn-retry-wrong" class="btn btn-primary hidden" type="button">
+              ↻ Luyện lại các câu sai
             </button>
-          </div>
-        </form>
-
-        <div id="quiz-result-card" class="quiz-complete-card" style="display:none; margin-top:2rem;"></div>
-      </div>
-    </section>
-
-    <!-- ==================== 7. VOCABULARY NOTEBOOK PANE ==================== -->
-    <section id="tab-notebook" class="tab-pane" role="tabpanel">
-      <div class="notebook-container">
-        <div class="notebook-toolbar">
-          <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-            <input type="text" id="notebook-search" class="notebook-search" placeholder="🔍 Tìm kiếm từ tiếng Anh hoặc tiếng Việt..." />
-            <div class="notebook-filters">
-              <button class="btn-filter-pill active" data-filter="all" type="button">Tất cả (48)</button>
-              <button class="btn-filter-pill" data-filter="saved" type="button">⭐ Đã lưu</button>
-              <button class="btn-filter-pill" data-filter="need-review" type="button">Chưa thuộc</button>
-              <button class="btn-filter-pill" data-filter="mastered" type="button">Đã thuộc</button>
-            </div>
-          </div>
-
-          <div style="display:flex; align-items:center; gap:0.5rem;">
-            <span id="notebook-saved-count" style="font-size:0.85rem; font-weight:600; color:var(--text-muted);"></span>
-            <button id="btn-export-csv" class="btn-nav-action" type="button">📥 Xuất CSV</button>
-            <button id="btn-print-sheet" class="btn-nav-action" type="button">🖨️ In tài liệu</button>
-          </div>
-        </div>
-
-        <div id="notebook-grid" class="notebook-grid"></div>
-      </div>
-    </section>
-
-    <!-- ==================== 8. A2 PROGRESS DASHBOARD PANE ==================== -->
-    <section id="tab-dashboard" class="tab-pane" role="tabpanel">
-      <div class="quiz-container">
-        <div class="dashboard-grid">
-          <div class="metric-card">
-            <div class="metric-header">Tiến độ từ vựng A2</div>
-            <div id="dash-mastered-count" class="metric-value-huge">0 / 48</div>
-            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:0.75rem;">
-              Tỷ lệ làm chủ: <strong id="dash-mastered-pct" style="color:var(--primary);">0%</strong>
-            </p>
-            <div style="width:100%; height:10px; background:var(--bg-surface); border-radius:999px; overflow:hidden;">
-              <div id="dash-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 400ms ease;"></div>
-            </div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-header">Giấy chứng nhận năng lực</div>
-            <div style="font-size:1.1rem; font-weight:700; margin: 0.5rem 0 0.85rem;">
-              Chứng nhận hoàn thành chuẩn CEFR A2
-            </div>
-            <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.5; margin-bottom:1.25rem;">
-              Khi ôn luyện đạt trên 40 từ vựng hoặc vượt qua các bài kiểm tra đọc hiểu, bạn có thể xuất bản Giấy chứng nhận hoàn thành.
-            </p>
-            <button id="btn-generate-cert" class="btn-quiz-primary" type="button">
-              🎓 Xuất Giấy Chứng Nhận A2
+            <button id="btn-restart-same" class="btn btn-outline" type="button">
+              Làm lại đề này
+            </button>
+            <button id="btn-new-session" class="btn btn-ghost" type="button">
+              Chọn bộ đề mới
             </button>
           </div>
         </div>
+      </div>
 
-        <!-- Badges Section -->
-        <div class="reading-card" style="margin-top: 1.5rem;">
-          <h3 style="margin-bottom: 1.25rem;">🏅 Huy hiệu đạt chuẩn A2</h3>
-          <div id="dash-badges-grid" class="badges-grid"></div>
+      <div class="card breakdown-card">
+        <h3>Phân tích kết quả theo chuyên đề</h3>
+        <div id="topic-breakdown" class="breakdown-grid"></div>
+      </div>
+
+      <div class="card review-card">
+        <div class="review-header">
+          <h3>Chi tiết bài làm &amp; Giải thích</h3>
+          <div class="filter-tabs" role="tablist">
+            <button class="filter-tab active" data-filter="all" type="button">Tất cả</button>
+            <button class="filter-tab" data-filter="wrong" type="button">Câu sai / Bỏ trống</button>
+            <button class="filter-tab" data-filter="correct" type="button">Câu đúng</button>
+            <button class="filter-tab" data-filter="flagged" type="button">Đã đánh dấu</button>
+          </div>
         </div>
+        <div id="review-list" class="review-list"></div>
       </div>
     </section>
-
   </main>
 
-  <!-- ==================== MODAL WORD INSPECTOR ==================== -->
-  <div id="word-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-word">
-    <div class="word-card-modal">
-      <button id="modal-close-btn" class="modal-close-btn" type="button" aria-label="Đóng cửa sổ">✕</button>
-      
-      <div class="modal-word-header">
-        <div class="modal-title-group">
-          <h3>
-            <span id="modal-word">word</span>
-            <button id="modal-btn-speak" class="btn-speaker-lg" type="button" aria-label="Nghe phát âm">🔊</button>
-          </h3>
-          <div class="modal-submeta">
-            <span id="modal-pos" class="pos-tag">adjective</span>
-            <span id="modal-ipa" class="ipa-text">/ipa/</span>
+  <footer class="app-footer">
+    <div class="container footer-inner">
+      <span>Tiếng Anh 11 (Global Success) • Unit 4: Gerunds &amp; Unit 5: Participle Clauses</span>
+      <span class="footer-tip">Phím tắt: <code>Enter</code> kiểm tra / qua câu • <code>Shift + Enter</code> xuống dòng</span>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL TÓM TẮT NGỮ PHÁP ==================== -->
+  <div id="grammar-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="grammar-modal-title">
+    <div class="modal-dialog card">
+      <div class="modal-header">
+        <h2 id="grammar-modal-title">📘 Tóm tắt ngữ pháp trọng tâm Unit 4 &amp; Unit 5</h2>
+        <button id="btn-close-grammar" class="btn-icon" type="button" aria-label="Đóng">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="grammar-section">
+          <h3>Unit 4: Gerunds as Subjects and Objects (Danh động từ <code>V-ing</code>)</h3>
+          <ul>
+            <li><strong>Làm chủ ngữ (Subject):</strong> <code>V-ing + V(số ít)...</code> — VD: <em>Developing leadership skills is necessary.</em> (Thay cho <em>It is + adj + to V</em>).</li>
+            <li><strong>Làm bổ ngữ sau <em>be</em>:</strong> <code>S + is/was + V-ing</code> — VD: <em>Phong's hobby is reading news items.</em></li>
+            <li><strong>Làm tân ngữ sau động từ:</strong> <code>mind, suggest, involve, avoid, enjoy, practise, finish... + V-ing</code>.</li>
+            <li><strong>Sau giới từ / cụm từ:</strong> <code>succeed in, be keen on, apologise for, thank sb for, look forward to, focus on, make a contribution to, warn sb against, prevent sb/sth from + V-ing</code>.</li>
+            <li><strong>Dạng phủ định:</strong> Thêm <code>not</code> ngay trước <code>V-ing</code> — VD: <em>apologised for not attending...</em></li>
+          </ul>
+        </div>
+
+        <div class="grammar-section">
+          <h3>Unit 5: Present &amp; Past Participle Clauses (Mệnh đề phân từ)</h3>
+          <p class="muted-sm">Điều kiện bắt buộc: Hai mệnh đề phải có <strong>cùng chủ ngữ</strong>!</p>
+          <div class="grammar-compare">
+            <div class="grammar-box">
+              <h4>1. Present Participle (<code>V-ing</code>) — Nghĩa CHỦ ĐỘNG</h4>
+              <ul>
+                <li><strong>Chỉ nguyên nhân</strong> (thay <em>Because/Since/As...</em>): <em>Producing a lot of methane, rice farms...</em></li>
+                <li><strong>Hai hành động đồng thời / hệ quả:</strong> <em>Walking around..., the students...</em> hoặc <em>People cut down trees, destroying...</em></li>
+                <li><strong>Phủ định:</strong> <code>Not + V-ing...</code> (<em>Not knowing about..., Minh...</em>).</li>
+              </ul>
+            </div>
+            <div class="grammar-box">
+              <h4>2. Past Participle (<code>V3/-ed</code>) — Nghĩa BỊ ĐỘNG</h4>
+              <ul>
+                <li><strong>Chỉ nguyên nhân bị động</strong> (<em>Because ... was/were V3/-ed</em>): <em>Warned about the health risks, the villagers...</em></li>
+                <li><strong>Chỉ điều kiện bị động</strong> (<em>If ... is/are V3/-ed</em>): <em>Used widely, renewable energy sources...</em></li>
+                <li><strong>Phủ định:</strong> <code>Not + V3/-ed...</code> (<em>Not treated properly, organic waste...</em>).</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div id="modal-meaning-vi" class="modal-meaning-vi">Nghĩa tiếng Việt</div>
-      <div id="modal-def-en" class="modal-def-en">"English Definition"</div>
-
-      <div class="modal-section">
-        <div class="modal-section-title">📖 Ngữ cảnh trong bài đọc</div>
-        <div id="modal-quote" class="modal-quote-text">“Context quote”</div>
-        <div id="modal-clue" class="modal-clue-text">Manh mối nhận biết từ ngữ cảnh</div>
-      </div>
-
-      <div class="modal-section">
-        <div class="modal-section-title">🔗 Cụm từ hay gặp (Collocations)</div>
-        <div id="modal-collocations" class="collocation-chips"></div>
-      </div>
-
-      <div class="modal-section">
-        <div class="modal-section-title">💡 Ví dụ ứng dụng mở rộng</div>
-        <div class="modal-example-box">
-          <p id="modal-example-en">Additional example</p>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button id="modal-btn-bookmark" class="btn-bookmark-action" type="button">
-          ⭐ Lưu vào sổ tay từ vựng
-        </button>
-        <button class="btn-nav-action" onclick="document.getElementById('word-modal-overlay').classList.remove('open')" type="button">
-          Đóng
-        </button>
       </div>
     </div>
   </div>
 
-  <footer style="margin-top:auto; background:var(--bg-card); border-top:1px solid var(--border-color); padding:1.5rem 0; text-align:center; font-size:0.85rem; color:var(--text-muted);">
-    <div class="container">
-      <p>LexiRead A2 • Nền tảng học từ vựng tiếng Anh theo ngữ cảnh bài đọc hiểu đạt chuẩn Cambridge A2 Key (KET).</p>
-      <p style="margin-top:0.35rem;">Thiết kế cho học sinh THCS, THPT &amp; người học tiếng Anh tiền trung cấp.</p>
+  <!-- ==================== MODAL XÁC NHẬN NỘP BÀI ==================== -->
+  <div id="confirm-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+    <div class="modal-dialog modal-sm card">
+      <div class="modal-header">
+        <h2 id="confirm-modal-title">Xác nhận nộp bài</h2>
+        <button id="btn-cancel-confirm" class="btn-icon" type="button" aria-label="Đóng">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-confirm-stay" class="btn btn-outline" type="button">Tiếp tục làm</button>
+        <button id="btn-confirm-submit" class="btn btn-accent" type="button">Nộp bài ngay</button>
+      </div>
     </div>
-  </footer>
+  </div>
 </body>
 </html>

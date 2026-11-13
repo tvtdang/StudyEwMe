@@ -2,22 +2,20 @@
   "name": "unit4-5-sentence-rewrite",
   "version": "1.0.0",
   "private": true,
-  "description": "Nền tảng học Tiếng Anh: Học từ vựng theo ngữ cảnh bài đọc hiểu (Chuẩn CEFR A2) & Ôn tập viết lại câu Tiếng Anh 11",
+  "description": "Web app luyện viết lại câu Tiếng Anh 11 (Global Success) - Unit 4 (Gerunds) & Unit 5 (Participle Clauses)",
   "scripts": {
     "dev": "npx --yes serve .",
     "preview": "npx --yes serve .",
-    "test:vocab": "start tests/vocab-runner.html",
-    "test:rewrite": "start tests/test-runner.html",
     "push": "powershell -ExecutionPolicy Bypass -File scripts/auto-push.ps1",
     "push:watch": "powershell -ExecutionPolicy Bypass -File scripts/auto-push.ps1 -Watch"
   },
   "keywords": [
-    "cefr-a2",
-    "cambridge-ket",
-    "reading-comprehension",
-    "contextual-vocabulary",
-    "flashcards",
     "english-11",
+    "global-success",
+    "unit-4",
+    "unit-5",
+    "gerunds",
+    "participle-clauses",
     "sentence-rewrite"
   ]
 }
